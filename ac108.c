@@ -810,6 +810,9 @@ static int ac108_set_sysclk(struct snd_soc_dai *dai, int clk_id, unsigned int fr
 
 	struct ac10x_priv *ac10x = snd_soc_dai_get_drvdata(dai);
 
+	if (freq != 24000000 || clk_id != SYSCLK_SRC_PLL)
+		dev_warn(dai->dev, "ac108_set_sysclk freq = %d clk = %d\n", freq, clk_id);
+
 	freq = 24000000;
 	clk_id = SYSCLK_SRC_PLL;
 
@@ -865,6 +868,7 @@ static int ac108_set_fmt(struct snd_soc_dai *dai, unsigned int fmt) {
 			/* TODO: Both cpu_dai and codec_dai(AC108) be set as slave in DTS */
 			dev_dbg(dai->dev, "used as slave when AC101 is master\n");
 		}
+		fallthrough;
 	case SND_SOC_DAIFMT_CBS_CFS:    /*AC108 Slave*/
 		dev_dbg(dai->dev, "AC108 set to work as Slave\n");
 		/**
@@ -1435,8 +1439,8 @@ static int ac108_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *i
 	if (of_property_read_u32(np, "tdm-chips-count", &val)) val = 1;
 	ac10x->tdm_chips_cnt = val;
 
-	pr_err(" ac10x i2c_id number: %d\n", index);
-	pr_err(" ac10x data protocol: %d\n", ac10x->data_protocol);
+	pr_info(" ac10x i2c_id number: %d\n", index);
+	pr_info(" ac10x data protocol: %d\n", ac10x->data_protocol);
 
 	ac10x->i2c[index] = i2c;
 	ac10x->i2cmap[index] = devm_regmap_init_i2c(i2c, &ac108_regmap);
@@ -1458,7 +1462,7 @@ static int ac108_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *i
 	ac10x_fill_regcache(&i2c->dev, ac10x->i2cmap[index]);
 
 	ac10x->codec_cnt++;
-	pr_err(" ac10x codec count  : %d\n", ac10x->codec_cnt);
+	pr_info(" ac10x codec count  : %d\n", ac10x->codec_cnt);
 
 	ret = sysfs_create_group(&i2c->dev.kobj, &ac108_debug_attr_group);
 	if (ret) {

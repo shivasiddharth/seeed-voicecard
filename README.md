@@ -9,9 +9,10 @@ Get the seeed voice card source code. and install all linux kernel drivers
 ```bash
 git clone https://github.com/respeaker/seeed-voicecard
 cd seeed-voicecard
-sudo ./install.sh 
+sudo ./install.sh
 sudo reboot
 ```
+It may probably happen that the driver won't compile with the latest kernel when raspbian rolls out new patches to the kernel. If so, please try `sudo ./install.sh --compat-kernel` which uses an older kernel but ensures that the driver can work. 
 
 ## ReSpeaker Mic Hat
 
@@ -195,7 +196,22 @@ plughw:CARD=seeed8micvoicec,DEV=0
 In contrast to 6-Mics Circular Array Kit for Raspberry Pi,
 the difference is only first 4 input channels are valid capture data.
 
+
 ### Usage:
+
+```bash
+#Query sound card number
+# The sound card number used as arecord/aplay argument,
+# ( like '-D hw:N' and '-D plughw:N', where N is the number )
+# could be found by command:
+  aplay -l
+#or
+  arecord -l
+# Find the line in the command output which near below form:
+card 1: seeed2micvoicec [seeed-2mic-voicecard], device 0: ...
+# The number between first word `card` and char `:` is the Sound Card Number, here it's 1.
+```
+
 ```bash
 #for ReSpeaker 2-mic
 #It will capture sound an playback on hw:1
