@@ -111,7 +111,6 @@ if [ "x${is_1a}" != "x" ] && [ "x${is_35}" == "x" ] ; then
 fi
 
 if [ "x${is_3b}" != "x" ] && [ "x${is_35}" == "x" ] ; then
-    echo "install 4mic"
     if [ -f $audioconfig ] ; then
         sudo rm $audioconfig
     fi
