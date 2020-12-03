@@ -21,11 +21,16 @@
 # THE SOFTWARE.
 
 set -x
-exec 1>/var/log/$(basename $0).log 2>&1
 LOGF=/var/log/$(basename $0).log
 exec 1> >(tee $LOGF)
 exec 2>&1
+
+export PATH=$PATH:/opt/vc/bin
+OVERLAYS=/boot/overlays
+[ -d /boot/firmware/overlays ] && OVERLAYS=/boot/firmware/overlays
+
 #enable i2c interface
+dtparam -d $OVERLAYS i2c_arm=on
 modprobe i2c-dev
 
 #enable spi interface
